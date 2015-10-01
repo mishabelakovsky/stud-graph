@@ -56,9 +56,11 @@ if (mode == 3): #ordered dithering
 				a, b, c = 0, 0, 0
 			draw.point((i, j), (a, b, c))
 
-if (mode == 6):#floyd-steinberg 
+if (mode == 4):#string diff
+
 	for j in range(height):
-		for i in range(width):
+		i = 0
+		for i in range(width-1):
 			oldpix = pix[i,j]
 			a = pix[i,j][0]
 			b = pix[i,j][1]
@@ -69,5 +71,58 @@ if (mode == 6):#floyd-steinberg
 			else
 				pix[i,j] = [0,0,0]
 
-			quant_error = sum(oldpix) - sum(pix[i,j]) 
+			quant_error = sum(oldpix) - sum(pix[i,j])
 			pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
+				
+if (mode == 5):#cross diff
+
+	for j in range(height):
+		i = 1
+		for i in range(width-1):
+			oldpix = pix[i,j]
+			a = pix[i,j][0]
+			b = pix[i,j][1]
+			c = pix[i,j][2]
+			S = a+b+c
+			if (S > (((255 + factor) //2)*3)):
+				pix[i,j] = [255,255,255]
+			else
+				pix[i,j] = [0,0,0]
+
+			quant_error = sum(oldpix) - sum(pix[i,j])
+			if (j % 2):
+				pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
+			else:
+				pix[width-x-1][y] = pix[width-x-1][y] + quant_error * 7/16
+
+if (mode == 6):#floyd-steinberg 
+	for j in range(height):
+		i=1
+		for i in range(width-1):
+			oldpix = pix[i,j]
+			a = pix[i,j][0]
+			b = pix[i,j][1]
+			c = pix[i,j][2]
+			S = a+b+c
+			if (S > (((255 + factor) //2)*3)):
+				pix[i,j] = [255,255,255]
+			else
+				pix[i,j] = [0,0,0]
+
+			quant_error = sum(oldpix) - sum(pix[i,j])
+			if (j == height - 1):
+				if (j % 2):
+					pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
+				else:
+					pix[x-1][y] = pix[x-1][y] + quant_error * 5 /16
+			else if (j % 2):
+					pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
+					pix[x-1][y+1] = pix[x-1][y+1] + quant_error * 3/16
+					pix[x][y+1] = pix[x][y+1] + quant_error * 5/16
+					pix[x+1][y+1] = pix [x+1][y+1] + quant_error /16
+			else:
+					pix[x-1][y] = pix[x-1][y] + quant_error * 5 /16
+					pix[x-1][y+1] = pix [x-1][y+1] + quant_error * 3/16
+					pix[x][y+1] = pix[x][y+1] + quant_error * 7/16
+					pix[x+1][y+1] = pix[x][y+1] + quant_error * 1/16
+
