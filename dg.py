@@ -38,6 +38,7 @@ if (mode == 2): #b/w with per-pixel randomized factor
 			draw.point((i, j), (a, b, c))
 
 if (mode == 3): #ordered dithering
+	factor = int(input('factor:='))
 	order_fn = input('order_matrix:=')
 	order_fd = open(order_fn,'r')
 	orders = order_fd.read(order_fd)
@@ -57,7 +58,7 @@ if (mode == 3): #ordered dithering
 			draw.point((i, j), (a, b, c))
 
 if (mode == 4):#string diff
-
+	factor = int(input('factor:='))
 	for j in range(height):
 		i = 0
 		for i in range(width-1):
@@ -68,14 +69,14 @@ if (mode == 4):#string diff
 			S = a+b+c
 			if (S > (((255 + factor) //2)*3)):
 				pix[i,j] = [255,255,255]
-			else
+			else:
 				pix[i,j] = [0,0,0]
 
 			quant_error = sum(oldpix) - sum(pix[i,j])
 			pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
 				
 if (mode == 5):#cross diff
-
+	factor = int(input('factor:='))
 	for j in range(height):
 		i = 1
 		for i in range(width-1):
@@ -86,7 +87,7 @@ if (mode == 5):#cross diff
 			S = a+b+c
 			if (S > (((255 + factor) //2)*3)):
 				pix[i,j] = [255,255,255]
-			else
+			else:
 				pix[i,j] = [0,0,0]
 
 			quant_error = sum(oldpix) - sum(pix[i,j])
@@ -96,6 +97,7 @@ if (mode == 5):#cross diff
 				pix[width-x-1][y] = pix[width-x-1][y] + quant_error * 7/16
 
 if (mode == 6):#floyd-steinberg 
+	factor = int(input('factor:='))
 	for j in range(height):
 		i=1
 		for i in range(width-1):
@@ -106,7 +108,7 @@ if (mode == 6):#floyd-steinberg
 			S = a+b+c
 			if (S > (((255 + factor) //2)*3)):
 				pix[i,j] = [255,255,255]
-			else
+			else:
 				pix[i,j] = [0,0,0]
 
 			quant_error = sum(oldpix) - sum(pix[i,j])
@@ -115,7 +117,7 @@ if (mode == 6):#floyd-steinberg
 					pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
 				else:
 					pix[x-1][y] = pix[x-1][y] + quant_error * 5 /16
-			else if (j % 2):
+			elif (j % 2):
 					pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
 					pix[x-1][y+1] = pix[x-1][y+1] + quant_error * 3/16
 					pix[x][y+1] = pix[x][y+1] + quant_error * 5/16
@@ -126,3 +128,5 @@ if (mode == 6):#floyd-steinberg
 					pix[x][y+1] = pix[x][y+1] + quant_error * 7/16
 					pix[x+1][y+1] = pix[x][y+1] + quant_error * 1/16
 
+image.save("out.jpg", "JPEG")
+del draw
