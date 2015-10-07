@@ -83,7 +83,8 @@ if (mode == 4):#string diff
 				pix[i][j][0] = pix[i][j][1] = pix[i][j][2] = 0#;
 
 			quant_error = sum(oldpix) - sum(pix[i][j])
-			pix[i+1][j] = pix[i+1][j] + quant_error * 7/16
+			for k in range(3):
+				pix[i+1][j][k] = pix[i+1][j][k] + quant_error * 7/16
 			draw.point((j, i), (pix[i][j][0], pix[i][j][1], pix[i][j][2]))
 
 if (mode == 5):#cross diff
@@ -102,11 +103,13 @@ if (mode == 5):#cross diff
 				pix[i][j] = [0,0,0]
 
 			quant_error = sum(oldpix) - sum(pix[i][j])
-			if (j % 2):
-				pix[x+1][y] = pix[x+1][y] + quant_error * 7/16
-			else:
-				pix[width-i-1][j] = pix[width-i-1][j] + quant_error * 7/16
-			draw.point((j, i), (pix[i,j][0], pix[i,j][1], pix[i,j][2]))
+			for k in range(3):	
+				if (j % 2):
+			
+					pix[i+1][j][k] = pix[i+1][j][k] + quant_error * 7/16
+				else:
+					pix[width-i-1][j][k] = pix[width-i-1][j][k] + quant_error * 7/16
+			draw.point((j, i), (pix[i][j][0], pix[i][j][1], pix[i][j][2]))
 
 if (mode == 6):#floyd-steinberg 
 	factor = int(input('factor:='))
@@ -124,21 +127,22 @@ if (mode == 6):#floyd-steinberg
 				pix[i][j] = [0,0,0]
 
 			quant_error = sum(oldpix) - sum(pix[i][j])
-			if (j == height - 1):
-				if (j % 2):
-					pix[i+1][j] = pix[i+1][j] + quant_error * 7/16
+			for k in range(3):
+				if (j == height - 1):
+					if (j % 2):
+						pix[i+1][j][k] = pix[i+1][j][k] + quant_error * 7/16
+					else:
+						pix[i-1][j][k] = pix[i-1][j][k] + quant_error * 5 /16
+				elif (j % 2):
+					pix[i+1][j][k] = pix[i+1][j][k] + quant_error * 7/16
+					pix[i-1][j+1][k] = pix[i-1][j+1][k] + quant_error * 3/16
+					pix[i][j+1][k] = pix[i][j+1][k] + quant_error * 5/16
+					pix[i+1][j+1][k] = pix [i+1][j+1][k] + quant_error /16
 				else:
-					pix[i-1][j] = pix[i-1][j] + quant_error * 5 /16
-			elif (j % 2):
-					pix[i+1][j] = pix[i+1][j] + quant_error * 7/16
-					pix[i-1][j+1] = pix[i-1][j+1] + quant_error * 3/16
-					pix[i][j+1] = pix[i][j+1] + quant_error * 5/16
-					pix[i+1][j+1] = pix [i+1][j+1] + quant_error /16
-			else:
-					pix[i-1][j] = pix[i-1][j] + quant_error * 5 /16
-					pix[i-1][j+1] = pix [i-1][j+1] + quant_error * 3/16
-					pix[i][j+1] = pix[i][j+1] + quant_error * 7/16
-					pix[i+1][j+1] = pix[i][j+1] + quant_error * 1/16
+					pix[i-1][j][k] = pix[i-1][j][k] + quant_error * 5 /16
+					pix[i-1][j+1][k] = pix [i-1][j+1][k] + quant_error * 3/16
+					pix[i][j+1][k] = pix[i][j+1][k] + quant_error * 7/16
+					pix[i+1][j+1][k] = pix[i][j+1][k] + quant_error * 1/16
 
 			draw.point((j, i), (pix[i][j][0], pix[i][j][1], pix[i][j][2]))
 image.save("out.jpg", "JPEG")
