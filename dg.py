@@ -21,10 +21,7 @@ if (mode == 1): #b/w with user-setting factor
 	factor = int(input('factor:='))
 	for i in range(width):
 		for j in range(height):
-			a = pix[i][j][0]
-			b = pix[i][j][1]
-			c = pix[i][j][2]
-			S = a + b + c
+			S = sum(pix[i][j])
 			if (S > (((255 + factor) // 2) * 3)):
 				a, b, c = 255, 255, 255
 			else:
@@ -36,10 +33,7 @@ if (mode == 2): #b/w with per-pixel randomized factor
 		for j in range(height):
 
 			factor = random.randrange(0,255,1)
-			a = pix[i][j][0]
-			b = pix[i][j][1]
-			c = pix[i][j][2]
-			S = a + b + c
+			S = sum(pix[i][j])
 			if (S > (((255 + factor) // 2) * 3)):
 				a, b, c = 255, 255, 255
 			else:
@@ -47,19 +41,21 @@ if (mode == 2): #b/w with per-pixel randomized factor
 			draw.point((j, i), (a, b, c))
 
 if (mode == 3): #ordered dithering
-	factor = int(input('factor:='))
+
 	order_fn = input('order_matrix:=')
 	order_fd = open(order_fn,'r')
-	orders = order_fd.read(order_fd)
+	A=[]
+	orders = (order_fd.read()).split("\n")
+	for i in range(len(orders)-1):
+		A.append(map(int,orders[i].split()))
+	orders = A
+	print orders
 
 	for i in range(width):
 		for j in range(height):
 
 			factor = random.randrange(0,255,1)
-			a = pix[i][j][0]
-			b = pix[i][j][1]
-			c = pix[i][j][2]
-			S = a + b + c
+			S = sum(pix[i][j])
 			if (S > (((255 + orders[i][j]) // 2) * 3)):
 				a, b, c = 255, 255, 255
 			else:
@@ -72,10 +68,7 @@ if (mode == 4):#string diff
 		i = 0
 		for i in range(width-1):
 			oldpix = pix[i][j]
-			a = pix[i][j][0]
-			b = pix[i][j][1]
-			c = pix[i][j][2]
-			S = a+b+c
+			S = sum(pix[i][j])
 			print pix[i][j]
 			if (S > (((255 + factor) //2)*3)):
 				pix[i][j][0] = pix[i][j][1] = pix[i][j][2] = 255#; [255,255,255]
@@ -93,10 +86,7 @@ if (mode == 5):#cross diff
 		i = 1
 		for i in range(width-1):
 			oldpix = pix[i][j]
-			a = pix[i][j][0]
-			b = pix[i][j][1]
-			c = pix[i][j][2]
-			S = a+b+c
+			S = sum(pix[i][j])
 			if (S > (((255 + factor) //2)*3)):
 				pix[i][j] = [255,255,255]
 			else:
@@ -117,10 +107,7 @@ if (mode == 6):#floyd-steinberg
 		i=1
 		for i in range(width-1):
 			oldpix = pix[i][j]
-			a = pix[i][j][0]
-			b = pix[i][j][1]
-			c = pix[i][j][2]
-			S = a+b+c
+			S = sum(pix[i][j])
 			if (S > (((255 + factor) //2)*3)):
 				pix[i][j] = [255,255,255]
 			else:
